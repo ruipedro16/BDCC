@@ -57,8 +57,16 @@ def classes():
 
 @app.route('/relations')
 def relations():
-    # TODO
-    return flask.render_template('not_implemented.html')
+    results = BQ_CLIENT.query(
+    '''
+        SELECT Relation, COUNT(*) As Image Count
+        FROM `bdcc22project.openimages.relations`
+        GROUP BY Relation
+        ORDER BY Relation ASC
+    ''').result()
+    logging.info('classes: results={}'.format(results.total_rows))
+    data = dict(results=results)
+    return flask.render_template('relations.html',data=data)
 
 @app.route('/image_info')
 def image_info():
