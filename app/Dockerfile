@@ -19,5 +19,5 @@ ENV GOOGLE_CLOUD_PROJECT=bdcc22-347022
 # Define network ports for the container to listen on at runtime
 EXPOSE 8080
 
-# Run app.py when the container launches
+# Run main.py when the container launches
 ENTRYPOINT ["python", "main.py"]
