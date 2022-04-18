@@ -4,7 +4,7 @@ FROM python:3.8
 # Set the working directory to /app
 WORKDIR /app
 
-# copy the requirements file used for dependencies
+# Copy the requirements file used for dependencies
 COPY requirements.txt .
 
 # Install any needed packages specified in requirements.txt
@@ -16,6 +16,7 @@ COPY . .
 # Set the GOOGLE_CLOUD_PROJECT environment variable
 ENV GOOGLE_CLOUD_PROJECT=bdcc22-347022
 
+# Define network ports for the container to listen on at runtime
 EXPOSE 8080
 
 # Run app.py when the container launches
