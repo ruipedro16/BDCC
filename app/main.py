@@ -104,7 +104,7 @@ def image_info():
     return flask.render_template('image_id.html', data=data)
 
 
-@ app.route('/image_search')
+@app.route('/image_search')
 def image_search():
     description = flask.request.args.get('description')
     image_limit = flask.request.args.get('image_limit', default=10, type=int)
@@ -126,7 +126,7 @@ def image_search():
     return flask.render_template('image_search.html', data=data)
 
 
-@ app.route('/relation_search')
+@app.route('/relation_search')
 def relation_search():
     class1 = flask.request.args.get('class1', default='%')
     relation = flask.request.args.get('relation', default='%')
@@ -136,7 +136,7 @@ def relation_search():
     return flask.render_template('not_implemented.html')
 
 
-@ app.route('/image_search_multiple')
+@app.route('/image_search_multiple')
 def image_search_multiple():
     descriptions = flask.request.args.get('descriptions').split(',')
     image_limit = flask.request.args.get('image_limit', default=10, type=int)
@@ -144,14 +144,14 @@ def image_search_multiple():
     return flask.render_template('not_implemented.html')
 
 
-@ app.route('/image_classify_classes')
+@app.route('/image_classify_classes')
 def image_classify_classes():
     with open(app.root_path + "/static/tflite/dict.txt", 'r') as f:
         data = dict(results=sorted(list(f)))
         return flask.render_template('image_classify_classes.html', data=data)
 
 
-@ app.route('/image_classify', methods=['POST'])
+@app.route('/image_classify', methods=['POST'])
 def image_classify():
     files = flask.request.files.getlist('files')
     min_confidence = flask.request.form.get(
