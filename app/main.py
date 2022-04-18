@@ -59,7 +59,7 @@ def classes():
 def relations():
     results = BQ_CLIENT.query(
     '''
-        SELECT Relation, COUNT(*) As Image Count
+        SELECT Relation, COUNT(*) As NumImages
         FROM `bdcc22project.openimages.relations`
         GROUP BY Relation
         ORDER BY Relation ASC
