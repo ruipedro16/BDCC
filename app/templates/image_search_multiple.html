@@ -20,7 +20,7 @@
                 <a href="/image_info?image_id={{result[0]}}">{{result[0]}}</a>
             </td>
             <td>
-                {{result[2]}} / {{len_descriptions}} classes.<br />
+                {{result[2]}} / {{description_len}} classes.<br />
 
                 {% for class in result[1] %}
                 <a href="/image_search?description={{class}}">{{class}}</a>

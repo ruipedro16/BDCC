@@ -170,10 +170,21 @@
             </form>
         </td>
     </tr>
+    <tr>
+        <td>
+            <tt>/cloud_vision</tt>
+        </td>
+        <td>
+            Use Cloud Vision API to classify images.
+        </td>
+        <td>
+            <form action="/cloud_vision" method="POST" enctype="multipart/form-data">
+	            <label>Image: </label>
+                <input type="file" name="files" multiple/>
+                <input type="submit" name="Classify" value="Classify"/>
+            </form>
+        </td>
+    </tr>
 </table>
- 
-
-
-
 
 {% endblock %}

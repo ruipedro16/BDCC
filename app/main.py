@@ -1,11 +1,15 @@
 # Imports
 from google.cloud import storage
 from google.cloud import bigquery
+from google.cloud import vision
 import tfmodel
 import os
 import logging
 import flask
 import warnings
+import io
+
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
@@ -69,9 +73,7 @@ def relations():
     ''').result()
 
     logging.info('classes: results={}'.format(results.total_rows))
-
     data = dict(results=results)
-
     return flask.render_template('relations.html', data=data)
 
 
@@ -85,7 +87,7 @@ def image_info():
         FROM `bdcc22project.openimages.image_labels`
         JOIN `bdcc22project.openimages.classes` USING(Label)
         WHERE ImageId = '{0}'
-        ORDER BY Description asc
+        ORDER BY Description ASC
     '''.format(image_id)
     ).result()
 
@@ -93,8 +95,8 @@ def image_info():
         '''
         SELECT C1.Description as Class1, R.Relation, C2.Description as Class2
         FROM `bdcc22project.openimages.relations` R
-        JOIN `bdcc22project.openimages.classes` C1 ON (R.Label1=c1.Label)
-        JOIN `bdcc22project.openimages.classes` C2 ON (R.Label2=c2.Label)
+        JOIN `bdcc22project.openimages.classes` C1 ON (R.Label1=C1.Label)
+        JOIN `bdcc22project.openimages.classes` C2 ON (R.Label2=C2.Label)
         WHERE R.ImageId = '{0}'
     '''.format(image_id)
     ).result()
@@ -173,18 +175,26 @@ def image_search_multiple():
         JOIN bdcc22project.openimages.classes USING(Label)
         WHERE Description IN UNNEST({0})
         GROUP BY ImageId
-        ORDER BY Count(Description) DESC, ImageId 
+        ORDER BY Count(Description) DESC, ImageId
         LIMIT {1}
     '''.format(descriptions, image_limit)
     ).result()
 
-    logging.info('image_search_multiple: descriptions={} image_limit={} results={}'.format(
-        descriptions, image_limit, results.total_rows))
+    logging.info(
+        'image_search_multiple: descriptions={} image_limit={} results={}'.format(
+            descriptions, image_limit, results.total_rows)
+    )
     data = dict(descriptions=descriptions,
                 image_limit=image_limit,
                 results=results)
-    return flask.render_template('image_search_multiple.html', data=data, descriptions=descriptions,
-                                 image_limit=image_limit, total=results.total_rows, description_len=len(descriptions))
+    return flask.render_template(
+        'image_search_multiple.html',
+        data=data,
+        descriptions=descriptions,
+        image_limit=image_limit,
+        total=results.total_rows,
+        description_len=len(descriptions)
+    )
 
 
 @app.route('/image_classify_classes')
@@ -217,6 +227,36 @@ def image_classify():
                 results=results)
     return flask.render_template('image_classify.html', data=data)
 
+"""
+TODO: Nao está testado
+@app.route('/cloud_vision')
+def cloud_vision():
+    # files = flask.request.files.getlist('files')
+    
+    image_id = flask.request.args.get('image_id')
+
+    client = vision.ImageAnnotatorClient()
+
+    image = vision.Image()
+
+    image.source.image_uri = uri
+
+    response = client.label_detection(image=image)
+    labels = response.label_annotations
+    print('Labels:')
+
+    for label in labels:
+        print(label.description)
+    if response.error.message:
+        raise Exception(
+            '{}\nFor more info on error messages, check: '
+            'https://cloud.google.com/apis/design/errors'.format(
+                response.error.message
+            )
+        )
+
+    return flask.render_template('cloud_vision.html')
+"""
 
 if __name__ == '__main__':
     # When invoked as a program.
