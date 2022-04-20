@@ -14,10 +14,10 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY . .
 
 # Set the GOOGLE_CLOUD_PROJECT environment variable
-ENV GOOGLE_CLOUD_PROJECT=bdcc22-347022
+ENV GOOGLE_CLOUD_PROJECT=big-data-project1-347618
 
 # Define network ports for the container to listen on at runtime
 EXPOSE 8080
 
-# Run app.py when the container launches
+# Run main.py when the container launches
 ENTRYPOINT ["python", "main.py"]
