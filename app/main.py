@@ -29,6 +29,7 @@ logging.info('Initialising BigQuery client')
 BQ_CLIENT = bigquery.Client()
 
 BUCKET_NAME = PROJECT + '.appspot.com'
+BUCKET_NAME = "gs://project1-bigdata2"
 logging.info('Initialising access to storage bucket {}'.format(BUCKET_NAME))
 APP_BUCKET = storage.Client().bucket(BUCKET_NAME)
 
@@ -52,8 +53,8 @@ def classes():
     results = BQ_CLIENT.query(
         '''
         Select Description, COUNT(*) AS NumImages
-        FROM `bdcc22project.openimages.image_labels`
-        JOIN `bdcc22project.openimages.classes` USING(Label)
+        FROM `big-data-project1-347618.dataset1.labels`
+        JOIN `big-data-project1-347618.dataset1.classes` USING(label)
         GROUP BY Description
         ORDER BY Description
     ''').result()
@@ -67,7 +68,7 @@ def relations():
     results = BQ_CLIENT.query(
         '''
         SELECT Relation, COUNT(*) As NumImages
-        FROM `bdcc22project.openimages.relations`
+        FROM `big-data-project1-347618.dataset1.relations`
         GROUP BY Relation
         ORDER BY Relation ASC
     ''').result()
@@ -84,8 +85,8 @@ def image_info():
     results_classes = BQ_CLIENT.query(
         '''
         SELECT Description
-        FROM `bdcc22project.openimages.image_labels`
-        JOIN `bdcc22project.openimages.classes` USING(Label)
+        FROM `big-data-project1-347618.dataset1.labels`
+        JOIN `big-data-project1-347618.dataset1.classes` USING(label)
         WHERE ImageId = '{0}'
         ORDER BY Description ASC
     '''.format(image_id)
@@ -94,9 +95,9 @@ def image_info():
     results_relations = BQ_CLIENT.query(
         '''
         SELECT C1.Description as Class1, R.Relation, C2.Description as Class2
-        FROM `bdcc22project.openimages.relations` R
-        JOIN `bdcc22project.openimages.classes` C1 ON (R.Label1=C1.Label)
-        JOIN `bdcc22project.openimages.classes` C2 ON (R.Label2=C2.Label)
+        FROM `big-data-project1-347618.dataset1.relations` R
+        JOIN `big-data-project1-347618.dataset1.classes` C1 ON (R.label1=C1.label)
+        JOIN `big-data-project1-347618.dataset1.classes` C2 ON (R.label2=C2.label)
         WHERE R.ImageId = '{0}'
     '''.format(image_id)
     ).result()
@@ -117,8 +118,8 @@ def image_search():
     results = BQ_CLIENT.query(
         '''
         SELECT ImageId
-        FROM `bdcc22project.openimages.image_labels`
-        JOIN `bdcc22project.openimages.classes` USING(Label)
+        FROM `big-data-project1-347618.dataset1.labels`
+        JOIN `big-data-project1-347618.dataset1.classes` USING(label)
         WHERE Description = '{0}'
         ORDER BY ImageId
         LIMIT {1}
@@ -142,9 +143,9 @@ def relation_search():
     results = BQ_CLIENT.query(
         '''
         SELECT R.ImageId, C1.Description as Class1, R.Relation, C2.Description as Class2
-        FROM `bdcc22project.openimages.relations` R
-        JOIN `bdcc21project.openimages.classes` C1 ON (R.Label1=C1.Label)
-        JOIN `bdcc21project.openimages.classes` C2 ON (R.Label2=C2.Label)
+        FROM `big-data-project1-347618.dataset1.relations` R
+        JOIN `big-data-project1-347618.dataset1.classes` C1 ON (R.label1=C1.label)
+        JOIN `big-data-project1-347618.dataset1.classes` C2 ON (R.label2=C2.label)
         WHERE R.Relation LIKE '{0}'
         AND C1.Description LIKE '{1}'
         AND C2.Description LIKE '{2}'
@@ -171,8 +172,8 @@ def image_search_multiple():
     results = BQ_CLIENT.query(
         '''
         SELECT ImageId, ARRAY_AGG(Description), COUNT(Description)
-        FROM bdcc22project.openimages.image_labels
-        JOIN bdcc22project.openimages.classes USING(Label)
+        FROM big-data-project1-347618.dataset1.labels
+        JOIN big-data-project1-347618.dataset1.classes USING(label)
         WHERE Description IN UNNEST({0})
         GROUP BY ImageId
         ORDER BY Count(Description) DESC, ImageId
@@ -243,7 +244,7 @@ def cloud_vision():
 
     response = client.label_detection(image=image)
     labels = response.label_annotations
-    print('Labels:')
+    print('labels:')
 
     for label in labels:
         print(label.description)

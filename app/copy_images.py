@@ -11,7 +11,7 @@ animals = ['Dolphin', 'Fox', 'Horse', 'Butterfly', 'Cat', 'Dog', 'Bee', 'Pig', '
 
 
 source_bucket_name = "bdcc_open_images_dataset"
-destination_bucket_name = "project1-bigdata"
+destination_bucket_name = "project1-bigdata2"
 
 storage_client = storage.Client()
 
