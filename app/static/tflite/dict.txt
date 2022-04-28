@@ -1,10 +1,10 @@
-Lion
-Bull
-Frog
-Chicken
-Elephant
-Duck
-Dolphin
-Tortoise
+Pig
 Butterfly
-Monkey
+Cat
+Dolphin
+Dog
+Goose
+Sea turtle
+Horse
+Bee
+Fox

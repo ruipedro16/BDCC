@@ -6,14 +6,14 @@ import os
 animals = ['Dolphin', 'Fox', 'Horse', 'Butterfly', 'Cat', 'Dog', 'Bee', 'Pig', 'Goose', 'Sea turtle']
 PROJECT_ID = 'big-data-project1-347618'
 BQ_CLIENT = bigquery.Client(project=PROJECT_ID)
-BUCKET_NAME="project1-bigdata"
+BUCKET_NAME="project1-bigdata2"
 
 print("Overwritting automl.csv")
 f = open("automl.csv", "w")
 
 storage_client = storage.Client()
 bucket = storage_client.bucket(BUCKET_NAME)
-gsurl="gs://project1-bigdata/"
+gsurl="gs://project1-bigdata2/"
 
 
 ## for each animal get 100 imageIds
