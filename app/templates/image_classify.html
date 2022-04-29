@@ -1,4 +1,4 @@
-{% extends 'general-template.html'  %}
+{% extends 'general-template.html' %}
 {% block content %}
 
 <h1>Image classification</h1>
@@ -15,8 +15,8 @@ with a minimum confidence level of <b>{{ data.min_confidence }}</b>.
     {% for result in data.results %}
     <tr>
         <td>
-            <a href="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}">
-                {{ result.filename }}
+            <a href="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}">
+                {{ result.filename }}
             </a>
         </td>
         <td>
@@ -28,7 +28,7 @@ with a minimum confidence level of <b>{{ data.min_confidence }}</b>.
                 {% for classification in result.classifications %}
                 <tr>
                     <td>
-                        <a href="/image_search?description={{ classification.label }}">{{ classification.label }}</a>
+                        <a href="/image_search?description={{ classification.label }}">{{ classification.label }}</a>
                     </td>
                     <td>
                         {{ classification.confidence }}
@@ -38,8 +38,8 @@ with a minimum confidence level of <b>{{ data.min_confidence }}</b>.
             </table>
         </td>
         <td>
-            <a href="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}">
-                <img src="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}" width="300" />
+            <a href="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}">
+                <img src="https://storage.googleapis.com/{{ data.bucket_name }}/{{ result.filename }}" width="300" />
             </a>
         </td>
     </tr>

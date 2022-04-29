@@ -30,7 +30,6 @@ app = flask.Flask(__name__)
 logging.info('Initialising BigQuery client')
 BQ_CLIENT = bigquery.Client()
 
-BUCKET_NAME = PROJECT + '.appspot.com'
 BUCKET_NAME = "project1-bigdata2.appspot.com"
 logging.info('Initialising access to storage bucket {}'.format(BUCKET_NAME))
 APP_BUCKET = storage.Client().bucket(BUCKET_NAME)
@@ -218,57 +217,6 @@ def image_classify():
             classifications = TF_CLASSIFIER.classify(file, min_confidence)
             blob = storage.Blob(file.filename, APP_BUCKET)
             blob.upload_from_file(file, blob, content_type=file.mimetype)
-            #blob.make_public()
-            #blob = APP_BUCKET.blob(file.filename)
-            #blob.upload_from_file(file content_type=file.mimetype)
-            #blob.make_public()
-            #new_path = os.path.abspath(file.filename)
-            #blob = APP_BUCKET.blob(file.filename)
-            #blob.upload_from_filename(new_path)
-            logging.info('image_classify: filename={} blob={} classifications={}'
-                         .format(file.filename, "sad" ,classifications))
-            results.append(dict(bucket=APP_BUCKET,
-                                filename=file.filename,
-                                classifications=classifications))
-
-    data = dict(bucket_name=APP_BUCKET.name,
-                min_confidence=min_confidence,
-                results=results)
-    return flask.render_template('image_classify.html', data=data)
-
-
-def detect_labels(uri):
-    client = vision.ImageAnnotatorClient()
-    image = vision.Image()
-    image.source.image_uri = uri
-
-    response = client.label_detection(image=image)
-    labels = response.label_annotations
-
-    if response.error.message:
-        raise Exception(
-            '{}\nFor more info on error messages, check: '
-            'https://cloud.google.com/apis/design/errors'.format(
-                response.error.message))
-
-    return labels
-
-
-@app.route('/cloud_vision', methods=['POST'])
-def cloud_vision():
-    """
-    the same as image_classify but using Cloud Vision API
-    """
-    files = flask.request.files.getlist('files')
-    min_confidence = flask.request.form.get(
-        'min_confidence', default=0.25, type=float)
-    results = []
-    if len(files) > 1 or files[0].filename != '':
-        for file in files:
-            blob = storage.Blob(file.filename, APP_BUCKET)
-            blob.upload_from_file(file, blob, content_type=file.mimetype)
-            #blob.make_public()
-            # classifications = detect_labels(f'{https://storage.googleapis.com}/project1-bigdata2/{file.filename}') # erro aqui
             logging.info('image_classify: filename={} blob={} classifications={}'
                          .format(file.filename, blob.name, classifications))
             results.append(dict(bucket=APP_BUCKET,
@@ -279,6 +227,46 @@ def cloud_vision():
                 min_confidence=min_confidence,
                 results=results)
     return flask.render_template('image_classify.html', data=data)
+
+
+
+@app.route('/cloud_vision', methods=['POST'])
+def cloud_vision():
+    files = flask.request.files.getlist('files')
+    min_confidence = 100
+
+    results = []
+    if len(files) > 1 or files[0].filename != '':
+        for file in files:
+            blob = storage.Blob(file.filename, APP_BUCKET)
+            blob.upload_from_file(file, blob, content_type=file.mimetype)
+            
+            client = vision.ImageAnnotatorClient()
+            image = vision.Image()
+            image.source.image_uri = 'https://storage.googleapis.com/' + APP_BUCKET.name + '/' + file.filename
+            
+            response = client.label_detection(image=image)
+
+            if response.error.message:
+                raise Exception('{}\nFor more info on error messages, check: https://cloud.google.com/apis/design/errors'.format(response.error.message))
+
+            classifications = response.label_annotations
+            scores = list(map(lambda x: x.score, classifications))
+            
+            if min(scores) < min_confidence:
+                min_confidence = min(scores)
+
+            logging.info('cloud_vision: filename={} blob={} classifications={}, scores={}'
+                         .format(file.filename, blob.name, classifications, scores))
+            results.append(dict(bucket=APP_BUCKET,
+                                filename=file.filename,
+                                classifications=classifications))
+   
+
+    data = dict(bucket_name=APP_BUCKET.name,
+                min_confidence='{:.5f}'.format(min_confidence),
+                results=results)
+    return flask.render_template('cloud_vision.html', data=data)
 
 
 if __name__ == '__main__':
