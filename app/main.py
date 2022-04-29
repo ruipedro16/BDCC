@@ -31,10 +31,10 @@ logging.info('Initialising BigQuery client')
 BQ_CLIENT = bigquery.Client()
 
 BUCKET_NAME = PROJECT + '.appspot.com'
-BUCKET_NAME = "gs://project1-bigdata2"
+BUCKET_NAME = "project1-bigdata2.appspot.com"
 logging.info('Initialising access to storage bucket {}'.format(BUCKET_NAME))
 APP_BUCKET = storage.Client().bucket(BUCKET_NAME)
-
+APP_BUCKET = storage.Client().bucket("project1-bigdata2")
 logging.info('Initialising TensorFlow classifier')
 TF_CLASSIFIER = tfmodel.Model(
     app.root_path + "/static/tflite/model.tflite",
@@ -218,9 +218,15 @@ def image_classify():
             classifications = TF_CLASSIFIER.classify(file, min_confidence)
             blob = storage.Blob(file.filename, APP_BUCKET)
             blob.upload_from_file(file, blob, content_type=file.mimetype)
-            blob.make_public()
+            #blob.make_public()
+            #blob = APP_BUCKET.blob(file.filename)
+            #blob.upload_from_file(file content_type=file.mimetype)
+            #blob.make_public()
+            #new_path = os.path.abspath(file.filename)
+            #blob = APP_BUCKET.blob(file.filename)
+            #blob.upload_from_filename(new_path)
             logging.info('image_classify: filename={} blob={} classifications={}'
-                         .format(file.filename, blob.name, classifications))
+                         .format(file.filename, "sad" ,classifications))
             results.append(dict(bucket=APP_BUCKET,
                                 filename=file.filename,
                                 classifications=classifications))
@@ -261,7 +267,7 @@ def cloud_vision():
         for file in files:
             blob = storage.Blob(file.filename, APP_BUCKET)
             blob.upload_from_file(file, blob, content_type=file.mimetype)
-            blob.make_public()
+            #blob.make_public()
             # classifications = detect_labels(f'{https://storage.googleapis.com}/project1-bigdata2/{file.filename}') # erro aqui
             logging.info('image_classify: filename={} blob={} classifications={}'
                          .format(file.filename, blob.name, classifications))
