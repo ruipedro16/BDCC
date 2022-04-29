@@ -233,7 +233,7 @@ def image_classify():
 @app.route('/cloud_vision', methods=['POST'])
 def cloud_vision():
     files = flask.request.files.getlist('files')
-    min_confidence = 100
+    min_confidence = 1
 
     results = []
     if len(files) > 1 or files[0].filename != '':
