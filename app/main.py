@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 PROJECT = os.environ.get('GOOGLE_CLOUD_PROJECT')
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'big-data-project1-347618-3a6dd425dbe8.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'big-data-project1-347618-be6d8ed4bd0b.json'
 
 logging.info('Google Cloud project is {}'.format(PROJECT))
 

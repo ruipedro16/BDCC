@@ -3,3 +3,5 @@ google-cloud-storage
 Flask
 tensorflow==2.8.0
 Pillow==9.1.0
+google-cloud-vision==2.7.2
+gunicorn==19.9.0
