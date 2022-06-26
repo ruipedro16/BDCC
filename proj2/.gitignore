@@ -1,5 +1,2 @@
-venv
 .idea
-.ipynb_checkpoints
-data/EVENTS.csv.gz
-data/EVENTS.csv
+data
